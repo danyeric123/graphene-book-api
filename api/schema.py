@@ -4,6 +4,7 @@ from graphene.types.inputobjecttype import InputObjectType
 from graphene.types.mutation import Mutation
 from graphene.types.objecttype import ObjectType
 from graphene.types.scalars import ID, Int, String
+from graphene.types.schema import Schema
 
 from graphene_django import DjangoObjectType, DjangoListField
 from .models import Book
@@ -58,10 +59,10 @@ class UpdateBook(Mutation):
     book_instance = Book.objects.get(pk=book_data.id)
     
     if book_instance:
-      book_instance.title = book_data.title
-      book_instance.author = book_data.author
-      book_instance.year_published = book_data.year_published
-      book_instance.review = book_data.review
+      if "title" in book_data: book_instance.title = book_data.title
+      if "author" in book_data: book_instance.author = book_data.author
+      if "year_published" in book_data: book_instance.year_published = book_data.year_published
+      if "review" in book_data: book_instance.review = book_data.review
       book_instance.save()
       
       return UpdateBook(book=book_instance)
@@ -84,3 +85,5 @@ class Mutation(ObjectType):
   create_book = CreateBook.Field()
   update_book = UpdateBook.Field()
   delete_book = DeleteBook.Field()
+  
+schema = Schema(query=Query, mutation=Mutation)
