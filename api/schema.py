@@ -1,4 +1,5 @@
 import graphene
+from graphene.types import field
 from graphene.types.field import Field
 from graphene.types.inputobjecttype import InputObjectType
 from graphene.types.mutation import Mutation
@@ -7,12 +8,17 @@ from graphene.types.scalars import ID, Int, String
 from graphene.types.schema import Schema
 
 from graphene_django import DjangoObjectType, DjangoListField
-from .models import Book
+from .models import Author, Book
+
+class AuthorType(DjangoObjectType):
+  class Meta:
+    model = Author
+    field = '__all__'
 
 class BookType(DjangoObjectType):
   class Meta:
     model = Book
-    fields ='__all__'
+    fields = '__all__'
     
 class Query(ObjectType):
   all_books = graphene.List(BookType)
