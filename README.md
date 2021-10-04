@@ -1,5 +1,5 @@
 ## Description
-This is a simple GraphQL server for books that uses Graphene and Django. It is based off of a [tutorial from Twilio](https://www.twilio.com/blog/graphql-apis-django-graphene), but slight changes were made based on my coding style.
+This is a simple GraphQL server for books that uses Graphene and Django. It is based off of a [tutorial from Twilio](https://www.twilio.com/blog/graphql-apis-django-graphene), but I added a realted model Author and extend the book mutations to include the author info too.
 
 ### Motivation
 I wanted to dive into GraphQL more after experimenting with it in TypeScript using Apollo and see how it would be like using Graphene. 
