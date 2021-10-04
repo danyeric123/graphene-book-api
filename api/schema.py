@@ -29,11 +29,17 @@ class Query(ObjectType):
   
   def resolve_book(self,info, book_id):
     return Book.objects.get(pk=book_id)
+
+class AuthorInput(InputObjectType):
+  id = ID()
+  first_name = String()
+  last_name = String()
+  dob = graphene.Date()
   
 class BookInput(InputObjectType):
   id = ID()
   title = String()
-  author = String()
+  author = Field(AuthorInput)
   year_published= String()
   review = Int()
   
@@ -45,9 +51,12 @@ class CreateBook(Mutation):
   
   @staticmethod
   def mutate(root, info, book_data=None):
+    print(book_data['author'])
+    author,_ = Author.objects.get_or_create(**book_data['author'])
+    print(author)
     book_instance =Book.objects.create(
       title=book_data.title,
-      author= book_data.author,
+      author= author,
       year_published=book_data.year_published,
       review = book_data.review
     )
