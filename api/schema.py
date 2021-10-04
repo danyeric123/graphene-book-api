@@ -75,9 +75,21 @@ class UpdateBook(Mutation):
     
     if book_instance:
       if "title" in book_data: book_instance.title = book_data.title
-      if "author" in book_data: book_instance.author = book_data.author
       if "year_published" in book_data: book_instance.year_published = book_data.year_published
       if "review" in book_data: book_instance.review = book_data.review
+      if "author" in book_data:
+        author = book_data['author']
+        author_instance, new = Author.objects.get_or_create(**author)
+        print(new)
+        print(author_instance)
+        if new or book_instance.author != author_instance:
+          print(author_instance)
+          book_instance.author = author_instance
+        else:
+          if "first_name" in author: author_instance.first_name = author.first_name
+          if "last_name" in author: author_instance.last_name = author.last_name
+          if 'dob' in author: author_instance.dob = author.dob
+          author_instance.save()
       book_instance.save()
       
       return UpdateBook(book=book_instance)
