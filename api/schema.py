@@ -1,3 +1,4 @@
+from django.http import request
 import graphene
 from graphene.types import field
 from graphene.types.field import Field
@@ -20,16 +21,6 @@ class BookType(DjangoObjectType):
     model = Book
     fields = '__all__'
     
-class Query(ObjectType):
-  all_books = graphene.List(BookType)
-  book = Field(BookType, book_id=Int())
-  
-  def resolve_all_books(self, info, **kwargs):
-    return Book.objects.all()
-  
-  def resolve_book(self,info, book_id):
-    return Book.objects.get(pk=book_id)
-
 class AuthorInput(InputObjectType):
   id = ID()
   first_name = String()
@@ -42,6 +33,23 @@ class BookInput(InputObjectType):
   author = Field(AuthorInput)
   year_published= String()
   review = Int()
+    
+class Query(ObjectType):
+  all_books = graphene.List(BookType)
+  book = Field(BookType, book_id=Int())
+  book_by_author = Field(AuthorType,first_name=String(required=True),last_name=String(required=True))
+  
+  def resolve_all_books(self, info, **kwargs):
+    return Book.objects.all()
+  
+  def resolve_book(self,info, book_id):
+    return Book.objects.get(pk=book_id)
+  
+  def resolve_book_by_author(self,info,first_name,last_name):
+    try:
+      return Author.objects.get(first_name=first_name,last_name=last_name)
+    except Author.DoesNotExist:
+      return None
   
 class CreateBook(Mutation):
   class Arguments:
